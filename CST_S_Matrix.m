@@ -24,16 +24,19 @@ for i=1:numvarargs
             Spara.Raw.Impedance{i}=Data.Impedance;
             fR_Ind{i}=find(Data.Frequencies==fR*1e6);
             Spara.Abs{i}=mag2db(abs(Data.Parameters(:,:,fR_Ind{i})));
+            Spara.Lin{i}=abs(Data.Parameters(:,:,fR_Ind{i}));
         case 'Y' || 'y'
             Data=yparameters(File);
             Spara.Datatype='Y';
             fR_Ind{i}=find(Data.Frequencies==fR*1e6);
             Spara.Abs{i}=(abs(Data.Parameters(:,:,fR_Ind{i})));
+            Spara.Lin{i}=abs(Data.Parameters(:,:,fR_Ind{i}));
         case 'Z' || 'z'
             Data=zparameters(File);
             Spara.Datatype='Z';
             fR_Ind{i}=find(Data.Frequencies==fR*1e6);
             Spara.Abs{i}=(abs(Data.Parameters(:,:,fR_Ind{i})));
+            Spara.Lin{i}=abs(Data.Parameters(:,:,fR_Ind{i}));
     end
 
     Spara.Ang{i}=angle(Data.Parameters(:,:,fR_Ind{i})).*180./pi();

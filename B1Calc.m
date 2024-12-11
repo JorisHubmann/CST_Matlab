@@ -75,8 +75,9 @@ switch Data_Dimension
             Data.B1m_Real{i}=real(Data.B1m{i});
             Data.B1m_Imag{i}=imag(Data.B1m{i});
             Data.B1p_Field{i}=abs(Data.B1p{i}).*1e6;
-            Data.B1m_Field{i}=abs(Data.B1p{i}).*1e6;
-
+            Data.B1m_Field{i}=abs(Data.B1m{i}).*1e6;
+            
+            
             Data.B1p_Field_RMS{i}=Data.B1p_Field{i}./sqrt(2);
             Data.B1m_Field_RMS{i}=Data.B1m_Field{i}./sqrt(2);
 
