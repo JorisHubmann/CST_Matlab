@@ -17,35 +17,58 @@ end
 
 for i=1:numvarargs
     dummy=fprintf("Read data from %s ...", File(i));
-    switch parameter
-        case 'S'
-            Data=sparameters(File(i));
-            Spara.Datatype='S';
-            Spara.Raw.Impedance{i}=Data.Impedance;
-            fR_Ind{i}=find(Data.Frequencies==fR*1e6);
-            Spara.Abs{i}=mag2db(abs(Data.Parameters(:,:,fR_Ind{i})));
-            Spara.Lin{i}=abs(Data.Parameters(:,:,fR_Ind{i}));
-        case 'Y' || 'y'
-            Data=yparameters(File);
-            Spara.Datatype='Y';
-            fR_Ind{i}=find(Data.Frequencies==fR*1e6);
-            Spara.Abs{i}=(abs(Data.Parameters(:,:,fR_Ind{i})));
-            Spara.Lin{i}=abs(Data.Parameters(:,:,fR_Ind{i}));
-        case 'Z' || 'z'
-            Data=zparameters(File);
-            Spara.Datatype='Z';
-            fR_Ind{i}=find(Data.Frequencies==fR*1e6);
-            Spara.Abs{i}=(abs(Data.Parameters(:,:,fR_Ind{i})));
-            Spara.Lin{i}=abs(Data.Parameters(:,:,fR_Ind{i}));
-    end
+    if exist(File(i),'file')==2
+        switch parameter
+            case 'S'
+                Data=sparameters(File(i));
+                Spara.Datatype='S';
+                Spara.Raw.Impedance{i}=Data.Impedance;
+                fR_Ind{i}=find(Data.Frequencies==fR*1e6);
+                Spara.Abs{i}=mag2db(abs(Data.Parameters(:,:,fR_Ind{i})));
+                Spara.Lin{i}=abs(Data.Parameters(:,:,fR_Ind{i}));
 
-    Spara.Ang{i}=angle(Data.Parameters(:,:,fR_Ind{i})).*180./pi();
-    Spara.fR{i}=fR;
-    Spara.Raw.Complex{i}=squeeze(Data.Parameters);
-    Spara.Raw.Absolut{i}=squeeze(mag2db(abs(Spara.Raw.Complex{i})));
-    Spara.Raw.Frequencies{i}=Data.Frequencies;
-    Spara.Raw.NumPorts{i}=Data.NumPorts;
-    fprintf(repmat('\b',1,dummy))
-    disp(append(File(i)+" read in ... (" + i + '/' + length(File) + ')'));
+            case 'y'
+                Data=yparameters(File);
+                Spara.Datatype='Y';
+                fR_Ind{i}=find(Data.Frequencies==fR*1e6);
+                Spara.Abs{i}=(abs(Data.Parameters(:,:,fR_Ind{i})));
+                Spara.Lin{i}=abs(Data.Parameters(:,:,fR_Ind{i}));
+
+            case 'Y'
+                Data=yparameters(File);
+                Spara.Datatype='Y';
+                fR_Ind{i}=find(Data.Frequencies==fR*1e6);
+                Spara.Abs{i}=(abs(Data.Parameters(:,:,fR_Ind{i})));
+                Spara.Lin{i}=abs(Data.Parameters(:,:,fR_Ind{i}));
+            case 'z'
+                Data=zparameters(File);
+                Spara.Datatype='Z';
+                fR_Ind{i}=find(Data.Frequencies==fR*1e6);
+                Spara.Abs{i}=(abs(Data.Parameters(:,:,fR_Ind{i})));
+                Spara.Lin{i}=abs(Data.Parameters(:,:,fR_Ind{i}));
+                Data=zparameters(File);
+
+            case 'Z'
+                Data=zparameters(File);
+                Spara.Datatype='Z';
+                fR_Ind{i}=find(Data.Frequencies==fR*1e6);
+                Spara.Abs{i}=(abs(Data.Parameters(:,:,fR_Ind{i})));
+                Spara.Lin{i}=abs(Data.Parameters(:,:,fR_Ind{i}));
+                Data=zparameters(File);
+        end
+
+        Spara.Ang{i}=angle(Data.Parameters(:,:,fR_Ind{i})).*180./pi();
+        Spara.fR{i}=fR;
+        Spara.Raw.Complex{i}=squeeze(Data.Parameters);
+        Spara.Raw.Absolut{i}=squeeze(mag2db(abs(Spara.Raw.Complex{i})));
+        Spara.Raw.Frequencies{i}=Data.Frequencies;
+        Spara.Raw.NumPorts{i}=Data.NumPorts;
+
+        fprintf(repmat('\b',1,dummy))
+        disp(append(File(i)+" read in ... (" + i + '/' + length(File) + ')'));
+    else
+        fprintf(repmat('\b',1,dummy))
+        disp(append(File(i)+" skipped ... (" + i + '/' + length(File) + ')'));
+    end
 end
 end

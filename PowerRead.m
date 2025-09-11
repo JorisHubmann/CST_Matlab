@@ -21,7 +21,7 @@ Data.Raw.Power=Raw;
 
 dummy=fprintf("Read data from %s Dielectric ...", Name');
 Dielectric=append(Name,'_Dielectric');
-Raw=readcell(Dielectric);
+Raw=readcell(Dielectric,'Delimiter', '\n');
 fprintf(repmat('\b',1,dummy))
 disp(append(Dielectric+" read in."'));
 Data.Raw.Dielectric=Raw;
@@ -56,7 +56,7 @@ else
 end
 
 %%
-MaterialNum=squeeze(size(Data.Raw.Dielectric(:,1)));
+MaterialNum=length(Data.Raw.Dielectric(:,1));
 
 for i=1:3:MaterialNum/3
     Data.Dielectrics.Materials{i,1}=Data.Raw.Dielectric{i,1};
@@ -64,7 +64,7 @@ for i=1:3:MaterialNum/3
 end
 
 %%
-VoxMaterialNum=squeeze(size(Data.Raw.Voxel(:,1)));
+VoxMaterialNum=length(Data.Raw.Voxel(:,1));
 t=1;
 for i=1:3:VoxMaterialNum+1/3
     Data.Voxel.Materials{t,1}=Data.Raw.Voxel{i,1};
