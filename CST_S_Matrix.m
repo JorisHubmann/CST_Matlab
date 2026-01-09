@@ -46,15 +46,14 @@ for i=1:numvarargs
                 fR_Ind{i}=find(Data.Frequencies==fR*1e6);
                 Spara.Abs{i}=(abs(Data.Parameters(:,:,fR_Ind{i})));
                 Spara.Lin{i}=abs(Data.Parameters(:,:,fR_Ind{i}));
-                Data=zparameters(File);
-
+                Spara.Complex{i}=Data.Parameters(:,:,fR_Ind{i});
             case 'Z'
                 Data=zparameters(File);
                 Spara.Datatype='Z';
                 fR_Ind{i}=find(Data.Frequencies==fR*1e6);
                 Spara.Abs{i}=(abs(Data.Parameters(:,:,fR_Ind{i})));
                 Spara.Lin{i}=abs(Data.Parameters(:,:,fR_Ind{i}));
-                Data=zparameters(File);
+                Spara.Complex{i}=Data.Parameters(:,:,fR_Ind{i});
         end
 
         Spara.Ang{i}=angle(Data.Parameters(:,:,fR_Ind{i})).*180./pi();
