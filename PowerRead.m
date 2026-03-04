@@ -2,16 +2,35 @@
 % fR frequeny under evaluation
 % Name given name (AName) from the Makro
 % VoxelData Boolean 0 if no voxel data, 1 if there is voxel data
-% varargin random value if there are lumped elements
+% varargin random value if there are lumped elements and a second if
+% conductor losses
 
 function [Data] =  PowerRead (fR,Name,VoxelData,varargin)
 
 fR_Str=num2str(fR);
-if isempty(varargin)
-    lumpedE = "false";
-else
-    lumpedE = "true";
+numvarargs = length ( varargin );
+switch numvarargs
+    case 2 
+        if varargin{1} == "LE"
+            lumpedE = "true";
+            CondL = "true";
+        else
+            lumpedE = "true";
+            CondL = "true";
+        end
+    case 1 
+        if varargin{1} == "LE"
+            lumpedE = "true";
+            CondL = "false";
+        else
+            lumpedE = "false";
+            CondL = "true";
+        end
+    case 0
+        lumpedE = "false";
+        CondL = "false";
 end
+
 dummy=fprintf("Read data from %s Power ...", Name');
 Power=append(Name,'_Power');
 Raw=readcell(Power);
@@ -27,7 +46,7 @@ disp(append(Dielectric+" read in."'));
 Data.Raw.Dielectric=Raw;
 
 if VoxelData==1
-    dummy=fprintf("Read data from %s Dielectric...", Name');
+    dummy=fprintf("Read data from %s Voxels...", Name');
     Voxel=append(Name,'_Voxel');
     Raw=readcell(Voxel);
     fprintf(repmat('\b',1,dummy))
@@ -38,14 +57,25 @@ end
 
 dummy=fprintf("Evaluate data ...");
 fR_index=find(string(Data.Raw.Power)==fR_Str);
-if lumpedE =="false"
+
+if lumpedE == "true" && CondL == "true"
     Data.Dielectrics.Total=Data.Raw.Power{fR_index(1),2};
-    Data.Accepted=Data.Raw.Power{fR_index(2),2};
-    Data.AcceptedDS=Data.Raw.Power{fR_index(3),2};
-    Data.Outgoing=Data.Raw.Power{fR_index(4),2};
-    Data.Radiated=Data.Raw.Power{fR_index(5),2};
-    Data.Stimulated=Data.Raw.Power{fR_index(6),2};
-else
+    Data.Conductor=Data.Raw.Power{fR_index(2),2};
+    Data.LumpedElemets=Data.Raw.Power{fR_index(3),2};
+    Data.Accepted=Data.Raw.Power{fR_index(4),2};
+    Data.AcceptedDS=Data.Raw.Power{fR_index(5),2};
+    Data.Outgoing=Data.Raw.Power{fR_index(6),2};
+    Data.Radiated=Data.Raw.Power{fR_index(7),2};
+    Data.Stimulated=Data.Raw.Power{fR_index(8),2};
+elseif lumpedE == "false" && CondL == "true"
+    Data.Dielectrics.Total=Data.Raw.Power{fR_index(1),2};
+    Data.Conductor=Data.Raw.Power{fR_index(2),2};
+    Data.Accepted=Data.Raw.Power{fR_index(3),2};
+    Data.AcceptedDS=Data.Raw.Power{fR_index(4),2};
+    Data.Outgoing=Data.Raw.Power{fR_index(5),2};
+    Data.Radiated=Data.Raw.Power{fR_index(6),2};
+    Data.Stimulated=Data.Raw.Power{fR_index(7),2};
+elseif lumpedE == "true" && CondL == "false"
     Data.Dielectrics.Total=Data.Raw.Power{fR_index(1),2};
     Data.LumpedElemets=Data.Raw.Power{fR_index(2),2};
     Data.Accepted=Data.Raw.Power{fR_index(3),2};
@@ -53,6 +83,13 @@ else
     Data.Outgoing=Data.Raw.Power{fR_index(5),2};
     Data.Radiated=Data.Raw.Power{fR_index(6),2};
     Data.Stimulated=Data.Raw.Power{fR_index(7),2};
+elseif lumpedE =="false" && CondL == "false"
+    Data.Dielectrics.Total=Data.Raw.Power{fR_index(1),2};
+    Data.Accepted=Data.Raw.Power{fR_index(2),2};
+    Data.AcceptedDS=Data.Raw.Power{fR_index(3),2};
+    Data.Outgoing=Data.Raw.Power{fR_index(4),2};
+    Data.Radiated=Data.Raw.Power{fR_index(5),2};
+    Data.Stimulated=Data.Raw.Power{fR_index(6),2};
 end
 
 %%
