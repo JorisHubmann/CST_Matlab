@@ -10,15 +10,11 @@ function [Data] =  PowerRead (fR,Name,VoxelData,varargin)
 fR_Str=num2str(fR);
 numvarargs = length ( varargin );
 switch numvarargs
-    case 2 
-        if varargin{1} == "LE"
-            lumpedE = "true";
-            CondL = "true";
-        else
-            lumpedE = "true";
-            CondL = "true";
-        end
-    case 1 
+    case 2
+        lumpedE = "true";
+        CondL = "true";
+
+    case 1
         if varargin{1} == "LE"
             lumpedE = "true";
             CondL = "false";
