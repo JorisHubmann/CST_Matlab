@@ -2,8 +2,11 @@
 % fR frequeny under evaluation
 % Name given name (AName) from the Makro
 % VoxelData Boolean 0 if no voxel data, 1 if there is voxel data
-% varargin random value if there are lumped elements and a second if
-% conductor losses
+% varargin = 'LE' + 'ConL' : lumped element loss and conductor loss
+% varargin = 'LE' : only lumped element loss
+% varargin = 'ConL' : only conductor loss
+% varagrin = '' : no lumped element loss and no conducor loss
+
 
 function [Data] =  PowerRead (fR,Name,VoxelData,varargin)
 
@@ -48,6 +51,14 @@ if VoxelData==1
     fprintf(repmat('\b',1,dummy))
     disp(append(Voxel+" read in."'));
     Data.Raw.Voxel=Raw;
+
+    VoxMaterialNum=length(Data.Raw.Voxel(:,1));
+    t=1;
+    for i=1:3:VoxMaterialNum
+        Data.Voxel.Materials{t,1}=Data.Raw.Voxel{i,1};
+        Data.Voxel.Materials{t,2}=str2double(Data.Raw.Voxel{i+2,1}(19:end));
+        t=t+1;
+    end
 end
 %%
 
@@ -63,6 +74,8 @@ if lumpedE == "true" && CondL == "true"
     Data.Outgoing=Data.Raw.Power{fR_index(6),2};
     Data.Radiated=Data.Raw.Power{fR_index(7),2};
     Data.Stimulated=Data.Raw.Power{fR_index(8),2};
+    Data.TM=Data.AcceptedDS-Data.Accepted;
+    Data.TMLE=Data.TM+Data.LumpedElemets;
 elseif lumpedE == "false" && CondL == "true"
     Data.Dielectrics.Total=Data.Raw.Power{fR_index(1),2};
     Data.Conductor=Data.Raw.Power{fR_index(2),2};
@@ -71,6 +84,7 @@ elseif lumpedE == "false" && CondL == "true"
     Data.Outgoing=Data.Raw.Power{fR_index(5),2};
     Data.Radiated=Data.Raw.Power{fR_index(6),2};
     Data.Stimulated=Data.Raw.Power{fR_index(7),2};
+    Data.TM=Data.AcceptedDS-Data.Accepted;
 elseif lumpedE == "true" && CondL == "false"
     Data.Dielectrics.Total=Data.Raw.Power{fR_index(1),2};
     Data.LumpedElemets=Data.Raw.Power{fR_index(2),2};
@@ -79,6 +93,8 @@ elseif lumpedE == "true" && CondL == "false"
     Data.Outgoing=Data.Raw.Power{fR_index(5),2};
     Data.Radiated=Data.Raw.Power{fR_index(6),2};
     Data.Stimulated=Data.Raw.Power{fR_index(7),2};
+    Data.TM=Data.AcceptedDS-Data.Accepted;
+    Data.TMLE=Data.TM+Data.LumpedElemets;
 elseif lumpedE =="false" && CondL == "false"
     Data.Dielectrics.Total=Data.Raw.Power{fR_index(1),2};
     Data.Accepted=Data.Raw.Power{fR_index(2),2};
@@ -86,24 +102,20 @@ elseif lumpedE =="false" && CondL == "false"
     Data.Outgoing=Data.Raw.Power{fR_index(4),2};
     Data.Radiated=Data.Raw.Power{fR_index(5),2};
     Data.Stimulated=Data.Raw.Power{fR_index(6),2};
+    Data.TM=Data.AcceptedDS-Data.Accepted;
 end
 
 %%
 MaterialNum=length(Data.Raw.Dielectric(:,1));
-
-for i=1:3:MaterialNum/3
-    Data.Dielectrics.Materials{i,1}=Data.Raw.Dielectric{i,1};
-    Data.Dielectrics.Materials{i,2}=str2double(Data.Raw.Dielectric{i+2,1}(19:end));
+t=1;
+for i=1:3:MaterialNum
+    Data.Dielectrics.Materials{t,1}=Data.Raw.Dielectric{i,1};
+    Data.Dielectrics.Materials{t,2}=str2double(Data.Raw.Dielectric{i+2,1}(19:end));
+    t=t+1;
 end
 
 %%
-VoxMaterialNum=length(Data.Raw.Voxel(:,1));
-t=1;
-for i=1:3:VoxMaterialNum+1/3
-    Data.Voxel.Materials{t,1}=Data.Raw.Voxel{i,1};
-    Data.Voxel.Materials{t,2}=str2double(Data.Raw.Voxel{i+2,1}(19:end));
-    t=t+1;
-end
+
 fprintf(repmat('\b',1,dummy))
 disp("Evaluation done.");
 end
