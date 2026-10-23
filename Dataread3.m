@@ -77,6 +77,8 @@ switch Field % Field under observation
         F="SAR_";
     case 'PLD'
         F="PLD_";
+    case 'EED'
+        F="EED_";
 end
 
 if Variable ~='n'
@@ -283,8 +285,12 @@ switch Dimension % Dimension of the Data 3D not jet implemented
                 Data.Img.y{i}=double(Data.Raw{i}.y.im);
                 Data.Real.z{i}=double(Data.Raw{i}.z.re);
                 Data.Img.z{i}=double(Data.Raw{i}.z.im);
-
+                
+                
                 % Complex
+                Data.Compl.x{i}=complex(Data.Real.x{i}+1i.*Data.Img.x{i});
+                Data.Compl.y{i}=complex(Data.Real.y{i}+1i.*Data.Img.y{i});
+                Data.Compl.z{i}=complex(Data.Real.z{i}+1i.*Data.Img.z{i});
 
                 Data.Compl.Real{i}=sqrt((Data.Raw{i}.x.re).^2+(Data.Raw{i}.y.re).^2+(Data.Raw{i}.z.re).^2); %passt (H,CH1)
                 Data.Compl.Img{i}=sqrt((Data.Raw{i}.x.im).^2+(Data.Raw{i}.y.im).^2+(Data.Raw{i}.z.im).^2);  %passt (H,CH2)

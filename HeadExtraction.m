@@ -149,7 +149,8 @@ elseif (NDData==3) % for 3D array
         end
         Head.Edge(:,:,u)=edge(Head.Binary(:,:,u),'canny'); % performes edge detection using canny edge
     end
-
+    
+    Head.BinaryFilled=imfill(Head.Binary,'holes');
     % exclude everything outside the inner bore diameter from the field to
     % exclude coils
 

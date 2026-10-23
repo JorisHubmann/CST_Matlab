@@ -23,8 +23,9 @@ switch Data_Dimension
             Data.Bx{i}=Data.mu0.*Data.Hx{i};
             Data.By{i}=Data.mu0.*Data.Hy{i};
             Data.Bz{i}=Data.mu0.*Data.Hz{i};
-
-            if B0_Direction == "-" % for negative z direction of B0
+            
+            % Collins 2016 page 1-5 and 1-6
+            if B0_Direction == "-" % for negative z direction of B0 
                 Data.B1p{i} = ( Data.Bx{i} + 1i.*Data.By{i} )./2;
                 Data.B1m{i} = conj( Data.Bx{i} - 1i.*Data.By{i} )./2;
             else %for positive z direction of B0
@@ -63,8 +64,8 @@ switch Data_Dimension
                 Data.B1p{i} = ( Data.Bx{i} + 1i.*Data.By{i} )./2;
                 Data.B1m{i} = conj( Data.Bx{i} - 1i.*Data.By{i} )./2;
             else %for positive z direction of B0
-                Data.B1p{i} = conj( Data.Bx{i} - 1i.*Data.By{i} )./2;
-                Data.B1m{i} = ( Data.Bx{i} + 1i.*Data.By{i} )./2;
+                Data.B1p{i} = conj( Data.Bx{i} - 1i.*Data.By{i} )./2; %cw rotation
+                Data.B1m{i} = ( Data.Bx{i} + 1i.*Data.By{i} )./2; % ccw rotation
             end
             [Data.xLength{i}, Data.yLength{i}, Data.zLength{i}] = size(Data.B1p{i});
             Data.x{i}=x{1,i};
